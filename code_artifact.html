@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玄都県公式ウェブサイト - Gento Prefecture Official</title>
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --text-color: #c5c6c7;
+            --border-color: #1f2833;
+            --accent-color: #45a29e;
+            --alert-color: #66fcf1;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: "Courier New", Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        canvas {
+            background-color: #000;
+            border: 1px solid var(--border-color);
+            margin: 10px 0;
+        }
+        .notice-box {
+            border: 1px solid var(--accent-color);
+            padding: 15px;
+            margin-top: 20px;
+            background-color: rgba(69, 162, 158, 0.05);
+        }
+        footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 11px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>玄都県庁 公共情報ポータル</h1>
+        <p>GENTO PREFECTURE ADMINISTRATIVE PORTAL</p>
+    </header>
+
+    <main>
+        <div style="text-align: center;">
+            <canvas id="emblemCanvas" width="120" height="120"></canvas>
+            <p style="font-size: 12px; color: #888;">【県章：無言の監視】</p>
+        </div>
+
+        <div class="notice-box">
+            <h3>【重要告知】第4種警戒事象の発令について</h3>
+            <p>県民の皆様におかれましては、日没後の不要不急の外出を控え、規定の行動指示に従ってください。</p>
+        </div>
+    </main>
+
+    <!-- ↓ 免責事項（フィクション表記） -->
+    <footer>
+        <p style="margin: 0 0 5px 0;">※当ウェブサイトはフィクションであり、実在の人物・団体・都道府県・施設等とは一切関係ありません。</p>
+        <p style="margin: 0;">© Gento Prefecture Official Site (FICTIONAL PROJECT)</p>
+    </footer>
+</div>
+
+<script>
+    // Audio Context Setup
+    let audioCtx = null;
+    let isAudioOn = false;
+
+    function playBeep(freq = 400, duration = 0.05) {
+        if (!isAudioOn || !audioCtx) return;
+        try {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function drawEmblem(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        
+        ctx.strokeStyle = '#c5c6c7';
+        ctx.lineWidth = 2;
+
+        // Base Diamond (Hawk)
+        ctx.beginPath();
+        ctx.moveTo(w / 2, h * 0.2);
+        ctx.lineTo(w * 0.8, h / 2);
+        ctx.lineTo(w / 2, h * 0.8);
+        ctx.lineTo(w * 0.2, h / 2);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Inner Willow Curve
+        ctx.beginPath();
+        ctx.arc(w / 2, h / 2, w * 0.25, 0, Math.PI);
+        ctx.stroke();
+    }
+
+    window.onload = function() {
+        drawEmblem('emblemCanvas');
+    };
+</script>
+</body>
+</html>
